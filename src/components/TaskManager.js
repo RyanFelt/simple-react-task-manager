@@ -59,39 +59,25 @@ export const TaskManager = () => {
   }, [editedItem]);
 
   const createNewList = () => {
-    let listsUpdate = JSON.parse(JSON.stringify(lists));
-
     const newListItem = {
+      newList: true,
       id: uuidv4(),
       name: "",
       items: []
     };
 
-    listsUpdate.push(newListItem);
-
-    setLists(listsUpdate);
     setEditedList({ ...newListItem });
     setEditListModal(true);
   };
 
   const createNewItem = ({ listId }) => {
-    let newItem = {};
+    const newItem = {
+      id: uuidv4(),
+      title: "",
+      description: ""
+    };
 
-    const listsUpdate = lists.map(list => {
-      if (listId === list.id) {
-        newItem = {
-          id: uuidv4(),
-          title: "",
-          description: ""
-        };
-
-        list.items[newItem.id] = newItem;
-      }
-      return list;
-    });
-
-    setLists(listsUpdate);
-    setEditedItem({ listId, item: { ...newItem } });
+    setEditedItem({ newItem: true, listId, item: { ...newItem } });
     setEditItemModal(true);
   };
 
@@ -163,10 +149,6 @@ export const TaskManager = () => {
           setEditItemModal={setEditItemModal}
         />
       ) : null}
-
-      <Button variant="dark margin-top-two" onClick={createNewList}>
-        <b>+ List</b>
-      </Button>
 
       <div className="task-manager">
         {lists.map(list => {
@@ -241,11 +223,17 @@ export const TaskManager = () => {
                 variant="secondary margin-two"
                 onClick={() => createNewItem({ listId: list.id })}
               >
-                <b>+ Item</b>
+                <b>+ Add another item</b>
               </Button>
             </div>
           );
         })}
+
+        <div className="new-list-button">
+          <Button variant="dark margin-top-two" onClick={createNewList}>
+            <b>+ List</b>
+          </Button>
+        </div>
       </div>
     </>
   );

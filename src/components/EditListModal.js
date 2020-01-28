@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, Button, FormControl } from "react-bootstrap";
 
 export const EditListModal = ({
@@ -9,6 +9,8 @@ export const EditListModal = ({
   setLists,
   setEditListModal
 }) => {
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleNameChange = event => {
     let updateEditedList = editedList;
     updateEditedList.name = event.target.value;
@@ -16,6 +18,15 @@ export const EditListModal = ({
   };
 
   const saveEditedList = () => {
+    if (!editedList.name.length) {
+      setErrorMessage("Enter List Name");
+      return;
+    }
+
+    if (editedList.newList) {
+      lists.push(editedList);
+    }
+
     const listsUpdate = lists.map(list => {
       if (editedList.id === list.id) {
         list.name = editedList.name;
@@ -42,7 +53,10 @@ export const EditListModal = ({
           onChange={handleNameChange}
           maxLength="50"
         />
+
+        <sup className="error-class">{errorMessage}</sup>
         <br />
+
         <Button variant="dark" onClick={saveEditedList}>
           Save
         </Button>

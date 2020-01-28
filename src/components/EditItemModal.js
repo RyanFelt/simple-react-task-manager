@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, Button, FormControl } from "react-bootstrap";
 
 export const EditItemModal = ({
@@ -9,6 +9,8 @@ export const EditItemModal = ({
   setLists,
   setEditItemModal
 }) => {
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleTitleChange = event => {
     let updateEditedItem = editedItem;
     updateEditedItem.item.title = event.target.value;
@@ -22,6 +24,11 @@ export const EditItemModal = ({
   };
 
   const saveEditedItem = () => {
+    if (!editedItem.item.title.length) {
+      setErrorMessage("Enter Item Title");
+      return;
+    }
+
     const listsUpdate = lists.map(list => {
       if (editedItem.listId === list.id) {
         list.items[editedItem.item.id] = editedItem.item;
@@ -58,7 +65,10 @@ export const EditItemModal = ({
           onChange={handleDescriptionChange}
           maxLength="100"
         />
+
+        <sup className="error-class">{errorMessage}</sup>
         <br />
+
         <Button variant="dark" onClick={saveEditedItem}>
           Save
         </Button>
